@@ -11,7 +11,7 @@ var openWeatherMap = require('openWeatherMap');
 var Weather = React.createClass({
   getDefaultProps: function () {
     return {
-      weatherMessage: "Tyoe a location in to load your weather."
+      weatherMessage: "Type a location in to load your weather."
     };
   },
   getInitialState: function () {
@@ -31,7 +31,9 @@ var Weather = React.createClass({
 
     this.setState({
       isLoading: true,
-      errorMessage: undefined
+      errorMessage: undefined,
+      temp: undefined,
+      location: undefined
      })
 
     //Create a reference to this to pass into the closure.
@@ -49,6 +51,22 @@ var Weather = React.createClass({
         errorMessage: e.message
       })
     })
+  },
+  componentDidMount: function () {
+    var location = this.props.location.query.location;
+
+    if(location && location.length > 0) {
+      this.handleSearch(null, location);
+      window.location.hash = "#/";
+    }
+  },
+  componentWillReceiveProps: function (newProps) {
+    var location = newProps.location.query.location;
+
+    if(location && location.length > 0) {
+      this.handleSearch(null, location);
+      window.location.hash = "#/";
+    }
   },
   render: function () {
     //Initial setup, creating a reference to a function you can pass to the search form.
