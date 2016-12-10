@@ -10,7 +10,7 @@ var Examples = require('Examples');
 
 //Load foundation
 require('style!css!foundation-sites/dist/foundation.min.css');
-require('style!css!applicationStyles')
+require('style!css!sass!applicationStyles')
 
 $(document).foundation();
 
