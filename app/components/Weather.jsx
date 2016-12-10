@@ -1,6 +1,11 @@
 var React = require('react');
+
+//Sub components
 var WeatherMessage = require('WeatherMessage');
 var WeatherForm = require('WeatherForm');
+var ErrorModal = require('ErrorModal');
+
+//API
 var openWeatherMap = require('openWeatherMap');
 
 var Weather = React.createClass({
@@ -11,11 +16,23 @@ var Weather = React.createClass({
   },
   getInitialState: function () {
     return {
-      isLoading: false
+      isLoading: false,
     }
   },
-  handleSearch: function(location) {
-    this.setState({ isLoading: true })
+  handleSearch: function(error, location) {
+    if(error != null) {
+      this.setState({
+        isLoading: false,
+        errorMessage: error
+      });
+
+      return;
+    }
+
+    this.setState({
+      isLoading: true,
+      errorMessage: undefined
+     })
 
     //Create a reference to this to pass into the closure.
     var that = this;
@@ -26,10 +43,10 @@ var Weather = React.createClass({
         temp: temp,
         isLoading: false
       })
-    }, function (errorMessage) {
-      alert(errorMessage);
+    }, function (e) {
       that.setState({
-        isLoading: false
+        isLoading: false,
+        errorMessage: e.message
       })
     })
   },
@@ -38,7 +55,7 @@ var Weather = React.createClass({
     var handleSearch = this.handleSearch;
 
     //ES6 destructuring of a JS object into 3 meaningful variables.
-    var {location, temp, isLoading} = this.state;
+    var {location, temp, isLoading, errorMessage} = this.state;
 
     //Private function to handle the creation of a message based on the state.
     function renderMessage () {
@@ -53,11 +70,21 @@ var Weather = React.createClass({
       }
     }
 
+    function renderError() {
+      if(typeof errorMessage === 'string') {
+        debugger;
+        return (
+          <ErrorModal message={errorMessage}></ErrorModal>
+        )
+      }
+    }
+
     return (
       <div>
         <h1 className="text-center">Get Weather</h1>
         <WeatherForm onSearch={handleSearch}></WeatherForm>
         { renderMessage() }
+        { renderError() }
       </div>
     )
   }

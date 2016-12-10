@@ -7,8 +7,10 @@ var WeatherForm = React.createClass({
     var location = this.refs.location.value;
 
     if(location.length > 0) {
-      this.props.onSearch(location);
-    };
+      this.props.onSearch(null, location);
+    } else {
+      this.props.onSearch("No characters entered.", null)
+    }
   },
   render: function () {
     var submissionFunction = this.onFormSubmit;
